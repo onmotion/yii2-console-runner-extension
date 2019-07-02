@@ -46,6 +46,11 @@ class ConsoleRunner extends Component
     public $file;
 
     /**
+     * @var bool whether it'll run in background
+     */
+    public $runInBackground = true;
+
+    /**
      * @var string The PHP binary path.
      */
     public $phpBinaryPath = PHP_BINDIR . '/php';
@@ -68,17 +73,18 @@ class ConsoleRunner extends Component
      * Running console command on background.
      *
      * @param string $cmd Argument that will be passed to console application.
+     * @param integer $exitCode Return valid exit code only in sync mode ($runInBackground = false).
      *
-     * @return boolean
+     * @return boolean|integer
      */
-    public function run($cmd)
+    public function run($cmd, &$exitCode = null)
     {
         $cmd = "{$this->phpBinaryPath} {$this->file} $cmd";
         $cmd = $this->isWindows() === true
-            ? $cmd = "start /b {$cmd}"
-            : $cmd = "{$cmd} > /dev/null 2>&1 &";
+            ? $cmd = "start ". ($this->runInBackground ? '\b' : '') ." {$cmd}"
+            : $cmd = "{$cmd} > /dev/null 2>&1" . ($this->runInBackground ? ' &' : '');
 
-        pclose(popen($cmd, 'r'));
+        $exitCode = pclose(popen($cmd, 'r'));
 
         return true;
     }
