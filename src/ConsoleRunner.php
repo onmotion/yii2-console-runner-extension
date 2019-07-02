@@ -75,7 +75,7 @@ class ConsoleRunner extends Component
      * @param string $cmd Argument that will be passed to console application.
      * @param integer $exitCode Return valid exit code only in sync mode ($runInBackground = false).
      *
-     * @return boolean|integer
+     * @return boolean
      */
     public function run($cmd, &$exitCode = null)
     {
